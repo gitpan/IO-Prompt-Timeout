@@ -28,11 +28,11 @@ no_index:
 provides:
   IO::Prompt::Timeout:
     file: lib/IO/Prompt/Timeout.pm
-    version: '0.02'
+    version: '0.03'
 requires:
   perl: '5.008001'
 resources:
   bugtracker: https://github.com/key-amb/perl5-IO-Prompt-Timeout/issues
   homepage: https://github.com/key-amb/perl5-IO-Prompt-Timeout
   repository: git://github.com/key-amb/perl5-IO-Prompt-Timeout.git
-version: '0.02'
+version: '0.03'

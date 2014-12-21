@@ -6,7 +6,7 @@ IO::Prompt::Timeout - Simple prompt interface with timeout.
 
     use IO::Prompt::Timeout qw(:all);
     my $answer = prompt('Yes or No? (y/n)', %option);
-    my $is_timeout = has_timed_out();
+    my $is_timeout = has_prompt_timed_out();
 
     # Specifying timeout seconds
     my $answer = prompt('Yes or No? (y/n) Answer in 10 seconds.', timeout => 10);
@@ -26,6 +26,17 @@ can be taken when it's set by option.
 Unlike Prompt::Timeout, this module uses simple $SIG{ALRM}.
 The function of clearing timer by a single key click is not supported which is
 implemented in Prompt::Timeout.
+
+# SUBROUTINES
+
+## prompt : Answer(SCALAR)
+
+Show prompt and returns the answer by user's input.
+
+## has\_prompt\_timed\_out : BOOL
+
+Called after a _prompt_ call.
+Returns if _prompt_ subroutine has timed out or not.
 
 # ENVIRONMENT VARIABLES
 
