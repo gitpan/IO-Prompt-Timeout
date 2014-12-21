@@ -55,7 +55,7 @@
    "provides" : {
       "IO::Prompt::Timeout" : {
          "file" : "lib/IO/Prompt/Timeout.pm",
-         "version" : "0.01"
+         "version" : "0.02"
       }
    },
    "release_status" : "stable",
@@ -69,5 +69,5 @@
          "web" : "https://github.com/key-amb/perl5-IO-Prompt-Timeout"
       }
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }
