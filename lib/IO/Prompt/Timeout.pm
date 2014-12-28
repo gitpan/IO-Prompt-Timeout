@@ -3,21 +3,20 @@ use 5.008001;
 use strict;
 use warnings;
 
+use IO::Select;
+
 use parent qw(Exporter);
 our @EXPORT_OK = qw(prompt has_prompt_timed_out);
 our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
 use Carp ();
 
-our $VERSION = "0.03";
+our $VERSION = "0.04";
 
 my $HAS_TIMED_OUT;
 my $DEFAULT_TIMEOUT_SEC = 60;
 
 sub prompt {
-    if ($^O eq 'MSWin32') {
-        Carp::croak(q[Windows OS is not supported!]);
-    }
     my $message = shift;
     unless ($message) {
         Carp::croak(q["prompt" called without any argument!]);
@@ -41,18 +40,13 @@ sub prompt {
     if ($ENV{PERL_IOPT_USE_DEFAULT} || (!$isa_tty && eof STDIN)) {
         print "$default_answer\n";
     } else {
-        my $alarm_error = "__ALARM__\n";
-        local $SIG{ALRM} = sub { die $alarm_error; };
         my $timeout = $opt{timeout} || $DEFAULT_TIMEOUT_SEC;
-        eval {
-            alarm $timeout;
-            $answer = <STDIN>;
-            alarm 0;
-        };
-        if ($@) {
-            unless ($@ eq $alarm_error) {
-                Carp::croak("Unexpected error while waiting prompt input! ERROR:$@");
-            }
+        my $is = IO::Select->new;
+        $is->add(\*STDIN);
+        if (my @readable = $is->can_read($timeout)) {
+            my $stdin = shift @readable;
+            $answer = <$stdin>;
+        } else {
             $HAS_TIMED_OUT = 1;
         }
 
@@ -74,7 +68,7 @@ sub has_prompt_timed_out { $HAS_TIMED_OUT; }
 sub _parse_args {
     my %args = @_;
     return (
-        default_answer => $args{default},
+        default_answer => $args{default} || q{},
         timeout        => $args{timeout},
     );
 }
@@ -109,7 +103,7 @@ It also has timeout feature just like L<Prompt::Timeout>.
 The default timeout seconds is 60. When prompt timed out, the default answer
 can be taken when it's set by option.
 
-Unlike Prompt::Timeout, this module uses simple $SIG{ALRM}.
+Unlike Prompt::Timeout, this module uses L<IO::Select> for timeout procedure.
 The function of clearing timer by a single key click is not supported which is
 implemented in Prompt::Timeout.
 
@@ -135,19 +129,12 @@ user input.
 
 =back
 
-=head1 KNOWN ISSUES
-
-=over 4
-
-=item $SIG{ALRM} is not supported on Windows OS. So this module won't work.
-
-=back
-
 =head1 SEE ALSO
 
 L<ExtUtils::MakeMaker>,
 L<IO::Prompt::Tiny>,
-L<Prompt::Timeout>
+L<Prompt::Timeout>,
+L<IO::Select>
 
 =head1 LICENSE
 

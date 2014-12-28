@@ -23,7 +23,7 @@ It also has timeout feature just like [Prompt::Timeout](https://metacpan.org/pod
 The default timeout seconds is 60. When prompt timed out, the default answer
 can be taken when it's set by option.
 
-Unlike Prompt::Timeout, this module uses simple $SIG{ALRM}.
+Unlike Prompt::Timeout, this module uses [IO::Select](https://metacpan.org/pod/IO::Select) for timeout procedure.
 The function of clearing timer by a single key click is not supported which is
 implemented in Prompt::Timeout.
 
@@ -45,15 +45,12 @@ Returns if _prompt_ subroutine has timed out or not.
     If set true, _prompt_ will always return the default answer without waiting for
     user input.
 
-# KNOWN ISSUES
-
-- $SIG{ALRM} is not supported on Windows OS. So this module won't work.
-
 # SEE ALSO
 
 [ExtUtils::MakeMaker](https://metacpan.org/pod/ExtUtils::MakeMaker),
 [IO::Prompt::Tiny](https://metacpan.org/pod/IO::Prompt::Tiny),
-[Prompt::Timeout](https://metacpan.org/pod/Prompt::Timeout)
+[Prompt::Timeout](https://metacpan.org/pod/Prompt::Timeout),
+[IO::Select](https://metacpan.org/pod/IO::Select)
 
 # LICENSE
 
